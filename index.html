@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<link rel="icon" href="data:,">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مساعد دراسي | الذكاء الاصطناعي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+
+        /* شريط التنقل العلوي */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo { font-size: 20px; font-weight: 700; color: var(--primary); }
+
+        nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .nav-btn {
+            background: transparent; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 8px 16px;
+            border-radius: 8px; cursor: pointer; transition: 0.3s;
+            font-weight: 500; font-size: 14px;
+        }
+        
+        .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        
+        /* الحاوية الرئيسية والشبكة (السر الهندسي لدعم الحواسيب والهواتف) */
+        main {
+            max-width: 1000px; margin: 30px auto; padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* تصميم البطاقات */
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; transition: transform 0.2s;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        
+        .card:hover { transform: translateY(-3px); border-color: var(--primary); }
+        
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
+        .card-desc { font-size: 14px; color: var(--text-muted); }
+        
+        /* الأزرار داخل البطاقات */
+        .btn {
+            display: inline-block; text-align: center; background: var(--primary);
+            color: #fff; padding: 10px; border-radius: 8px; text-decoration: none;
+            border: none; cursor: pointer; font-weight: 500; width: 100%; transition: 0.3s;
+        }
+        .btn:hover { background: var(--primary-hover); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        /* قسم فارغ */
+        .empty-state {
+            grid-column: 1 / -1; text-align: center; padding: 50px 20px;
+            color: var(--text-muted); border: 2px dashed var(--border); border-radius: 12px;
+        }
+
+        /* لوحة الإدارة */
+        .admin-panel {
+            grid-column: 1 / -1; background: rgba(59, 130, 246, 0.05);
+            border: 1px dashed var(--primary); border-radius: 12px; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">مساعد دراسي 🎓</div>
+        <nav id="nav-menu">
+            <button class="nav-btn active" onclick="switchTab('subjects')">المواد الدراسية</button>
+            <button class="nav-btn" onclick="switchTab('batch')">معلومات الدفعة</button>
+        </nav>
+    </header>
+
+    <main id="app-content">
+        <!-- سيتم حقن المحتوى هنا بواسطة الجافاسكربت -->
+    </main>
+
+    <script>
+        // المتغيرات الأساسية للنظام
+        let currentTab = 'subjects';
+        let currentUser = { role: 'admin' }; 
+        let currentSubjectId = null;
+
+        // نقطة البداية
+        function init() {
+            render();
+        }
+
+        // دالة التبديل بين النوافذ
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+            render();
+        }
+
+        // دالة الرسم الأساسية (المحرك)
+        function render() {
+            const app = document.getElementById('app-content');
+            app.innerHTML = ''; // تفريغ الشاشة
+
+            if (currentTab === 'subjects') {
+                const subjectsList = [
+                    { id: 'oop', name: 'برمجة شيئية', doctor: 'د. [اسم الدكتور]', icon: '💻' },
+                    { id: 'num_analysis', name: 'التحليل العددي', doctor: 'د. [اسم الدكتور]', icon: '✍️' },
+                    { id: 'computation', name: 'النظرية الاحتسابية', doctor: 'د. [اسم الدكتور]', icon: '🧮' },
+                    { id: 'python', name: 'لغة بايثون', doctor: 'د. [اسم الدكتور]', icon: '🐍' },
+                    { id: 'arabic', name: 'اللغة العربية', doctor: 'د. [اسم الدكتور]', icon: '📚' },
+                    { id: 'ai_algo', name: 'خوارزميات AI', doctor: 'د. [اسم الدكتور]', icon: '🤖' }
+                ];
+
+                app.innerHTML = subjectsList.map(sub => `
+                    <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
+                        <div style="font-size: 45px; margin-bottom: 10px;">${sub.icon}</div>
+                        <div class="card-title">${sub.name}</div>
+                        <div class="card-desc" style="margin-bottom: 15px;">${sub.doctor}</div>
+                        <button class="btn" onclick="openSubject('${sub.id}')">فتح المادة</button>
+                    </div>
+                `).join('');
+            }
+            else if (currentTab === 'batch') {
+                let batchHTML = `
+                    <div class="card" style="grid-column: 1 / -1; text-align: center;">
+                        <div class="card-title" style="font-size: 24px;">علوم الذكاء الاصطناعي - المرحلة الثانية</div>
+                        <div class="card-desc" style="margin-top: 10px;">إدارة وإشراف: مهدي</div>
+                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+                        
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                            <a href="#" class="btn" style="flex: 1; min-width: 150px;">قناة التبليغات</a>
+                            <a href="#" class="btn" style="flex: 1; min-width: 150px; background: #22c55e;">كروب المناقشة</a>
+                            <a href="#" class="btn" style="flex: 1; min-width: 150px; background: #ef4444;">قناة الشروحات (يوتيوب)</a>
+                        </div>
+                    </div>
+
+                    <div class="card" style="grid-column: 1 / -1;">
+                        <div class="card-title" style="color: var(--primary);">📢 الرسالة الأسبوعية</div>
+                        <div class="card-desc" style="font-size: 16px;">(سيتم جلب هذه الرسالة من قاعدة البيانات عبر الـ API الخاص بك)</div>
+                    </div>
+                `;
+
+                if (currentUser && currentUser.role === 'admin') {
+                    batchHTML += `
+                        <div class="admin-panel">
+                            <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">⚙️ لوحة تحكم الإدارة</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn" style="flex: 1;">تحديث الرسالة الأسبوعية</button>
+                                <button class="btn btn-danger" style="flex: 1;">+ إضافة مشرف جديد</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                app.innerHTML = batchHTML;
+            }
+            // الواجهة التي نسيتها: صفحة عرض المحاضرات
+            else if (currentTab === 'lectures') {
+                let lecturesHTML = `
+                    <div style="grid-column: 1 / -1; margin-bottom: 10px;">
+                        <button class="btn" style="width: auto; background: var(--border); color: var(--text-main);" onclick="switchTab('subjects')">🔙 العودة للمواد</button>
+                    </div>
+                    
+                    <div class="card" style="grid-column: 1 / -1;">
+                        <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">📚 المحاضرات والشروحات</div>
+                        <div id="lectures-container" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="empty-state">سيتم جلب المحاضرات من قاعدة البيانات هنا...</div>
+                        </div>
+                    </div>
+                `;
+
+                if (currentUser && currentUser.role === 'admin') {
+                    lecturesHTML += `
+                        <div class="admin-panel" style="margin-top: 20px;">
+                            <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">⚙️ رفع محتوى جديد للمادة</div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button class="btn" style="flex: 1;" onclick="addContent('pdf')">+ إضافة ملف محاضرة</button>
+                                <button class="btn btn-danger" style="flex: 1;" onclick="addContent('video')">+ إضافة شرح يوتيوب</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                app.innerHTML = lecturesHTML;
+            }
+        }
+
+        // الانتقال لصفحة المادة وجلب بياناتها
+        function openSubject(id) {
+            currentSubjectId = id;
+            currentTab = 'lectures';
+            render(); 
+            fetchSubjectData(); 
+        }
+
+        // دالة جلب المحاضرات من الخادم
+        function fetchSubjectData() {
+            const container = document.getElementById('lectures-container');
+            container.innerHTML = '<div class="empty-state">⏳ جاري الاتصال بالخادم...</div>';
+
+            fetch(`https://batch-api-oj4n.vercel.app/api/lectures/${currentSubjectId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="empty-state">لا توجد محاضرات أو شروحات لهذه المادة حتى الآن.</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(item => `
+                    <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-weight: 500;">${item.title}</div>
+                        <a href="${item.url}" target="_blank" class="btn" style="width: auto; padding: 5px 15px; background: ${item.type === 'video' ? 'var(--danger)' : 'var(--primary)'}">
+                            ${item.type === 'video' ? '▶️ مشاهدة' : '📄 تحميل'}
+                        </a>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                console.error(error);
+                container.innerHTML = '<div class="empty-state" style="color: #ef4444;">❌ فشل الاتصال بالخادم. تأكد من الروابط.</div>';
+            });
+        }
+
+        // دالة إضافة محتوى جديد
+        function addContent(type) {
+            let title = prompt("اكتب عنوان المحاضرة أو الشرح (مثال: المحاضرة الأولى):");
+            if (!title) return;
+            
+            let url = prompt("ضع رابط الملف أو فيديو اليوتيوب هنا:");
+            if (!url) return;
+
+            fetch(`https://batch-api-oj4n.vercel.app/api/lectures/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    subject_id: currentSubjectId, 
+                    title: title, 
+                    url: url, 
+                    type: type 
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("✅ تمت الإضافة بنجاح!");
+                fetchSubjectData(); 
+            })
+            .catch(e => alert("حدث خطأ أثناء الإضافة"));
+        }
+
+        // تشغيل النظام
+        init();
+    </script>
+</body>
+</html>
