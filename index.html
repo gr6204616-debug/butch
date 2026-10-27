@@ -166,26 +166,32 @@
 }
 
         function realLogin() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-pass').value;
-            if(!email || !password) return alert("الرجاء إدخال البيانات");
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-pass').value;
+    if(!email || !password) return alert("الرجاء إدخال البيانات");
 
-            fetch(`${API_URL}/api/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            })
-            .then(res => {
-                if(!res.ok) throw new Error("بيانات خاطئة");
-                return res.json();
-            })
-            .then(data => {
-                currentUser = data.user;
-                localStorage.setItem('batchUser', JSON.stringify(currentUser));
-                init();
-            })
-            .catch(e => alert("فشل تسجيل الدخول: البريد أو كلمة المرور خاطئة."));
+    fetch(`${API_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    })
+    .then(async res => {
+        if(!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`خطأ ${res.status}: ${errorText}`);
         }
+        return res.json();
+    })
+    .then(data => {
+        currentUser = data.user;
+        localStorage.setItem('batchUser', JSON.stringify(currentUser));
+        init();
+    })
+    .catch(e => {
+        console.error(e);
+        alert(`السبب الحقيقي للفشل:\n${e.message}`);
+    });
+}
 
         
 
