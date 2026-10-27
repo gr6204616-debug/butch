@@ -15,7 +15,7 @@ import models
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 # 2. تهيئة قاعدة البيانات والتطبيق
-models.Base.metadata.create_all(bind=engine)
+#models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="نظام إدارة الدفعة")
 
