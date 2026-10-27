@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<link rel="icon" href="data:,">
-
+    <link rel="icon" href="data:,">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مساعد دراسي | الذكاء الاصطناعي</title>
@@ -11,273 +10,558 @@
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
+            --item-bg: #162032;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary: #3b82f6;
             --primary-hover: #2563eb;
             --danger: #ef4444;
+            --danger-hover: #dc2626;
             --success: #10b981;
+            --warning: #f59e0b;
             --border: #334155;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        
         body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
 
-        /* شريط التنقل العلوي */
         header {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background-color: var(--card-bg); border-bottom: 1px solid var(--border);
+            padding: 15px 20px; position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        
         .logo { font-size: 20px; font-weight: 700; color: var(--primary); }
-
         nav { display: flex; gap: 10px; flex-wrap: wrap; }
         
         .nav-btn {
-            background: transparent; border: 1px solid var(--border);
-            color: var(--text-muted); padding: 8px 16px;
-            border-radius: 8px; cursor: pointer; transition: 0.3s;
-            font-weight: 500; font-size: 14px;
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 500;
         }
-        
         .nav-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        main { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         
-        /* الحاوية الرئيسية والشبكة (السر الهندسي لدعم الحواسيب والهواتف) */
-        main {
-            max-width: 1000px; margin: 30px auto; padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            align-items: start;
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; align-items: start;
         }
 
-        /* تصميم البطاقات */
         .card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px; transition: transform 0.2s;
-            display: flex; flex-direction: column; gap: 10px;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 20px; display: flex; flex-direction: column; gap: 10px; transition: 0.2s;
         }
-        
-        .card:hover { transform: translateY(-3px); border-color: var(--primary); }
-        
         .card-title { font-size: 18px; font-weight: 700; color: var(--text-main); }
-        .card-desc { font-size: 14px; color: var(--text-muted); }
         
-        /* الأزرار داخل البطاقات */
+        .input-field {
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--bg-color); color: white; margin-bottom: 10px; font-family: 'Tajawal'; outline: none;
+        }
+        .input-field:focus { border-color: var(--primary); }
+
         .btn {
-            display: inline-block; text-align: center; background: var(--primary);
-            color: #fff; padding: 10px; border-radius: 8px; text-decoration: none;
-            border: none; cursor: pointer; font-weight: 500; width: 100%; transition: 0.3s;
+            display: inline-block; text-align: center; background: var(--primary); color: #fff;
+            padding: 10px 15px; border-radius: 8px; text-decoration: none; border: none;
+            cursor: pointer; font-weight: 500; width: 100%; transition: 0.3s;
         }
         .btn:hover { background: var(--primary-hover); }
-        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: #fff; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: var(--danger-hover); }
+        .btn-success { background: var(--success); }
+        .btn-outline { background: transparent; border: 1px solid var(--text-muted); color: var(--text-main); }
+        .btn-delete { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-delete:hover { background: var(--danger); color: white; }
 
-        /* قسم فارغ */
-        .empty-state {
-            grid-column: 1 / -1; text-align: center; padding: 50px 20px;
-            color: var(--text-muted); border: 2px dashed var(--border); border-radius: 12px;
-        }
+        /* تبويبات المادة الثلاثة */
+        .sub-tabs { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; overflow-x: auto; white-space: nowrap; }
+        .sub-tab-btn { background: transparent; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 5px 10px; }
+        .sub-tab-btn.active { color: var(--primary); font-weight: bold; border-bottom: 2px solid var(--primary); }
 
-        /* لوحة الإدارة */
-        .admin-panel {
-            grid-column: 1 / -1; background: rgba(59, 130, 246, 0.05);
-            border: 1px dashed var(--primary); border-radius: 12px; padding: 20px;
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); border: 2px dashed var(--border); border-radius: 12px; }
+        .admin-panel { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); border-radius: 12px; padding: 20px; margin-top: 20px;}
+        
+        /* تصميم قسم الأسئلة */
+        .q-box { background: var(--item-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .q-text { font-weight: bold; color: var(--warning); margin-bottom: 5px; }
+        .a-text { color: var(--success); background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px; }
+
+        .login-wrapper { max-width: 400px; margin: 100px auto; text-align: center; }
+
+        /* النافذة المنبثقة */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 1000;
+            justify-content: center; align-items: center;
         }
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 450px; padding: 25px;
+            border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .modal-header { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: white; display: flex; justify-content: space-between;}
+        .close-modal { cursor: pointer; color: var(--text-muted); font-size: 24px; border: none; background: none; }
+        
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="main-header" style="display: none;">
         <div class="logo">مساعد دراسي 🎓</div>
-        <nav id="nav-menu">
-            <button class="nav-btn active" onclick="switchTab('subjects')">المواد الدراسية</button>
-            <button class="nav-btn" onclick="switchTab('batch')">معلومات الدفعة</button>
+        <nav>
+            <button class="nav-btn active" onclick="switchMainTab('subjects')">المواد الدراسية</button>
+            <button class="nav-btn" onclick="switchMainTab('batch')">الدفعة</button>
+            <button class="nav-btn" style="border: none; color: var(--danger);" onclick="logout()">خروج</button>
         </nav>
     </header>
 
-    <main id="app-content">
-        <!-- سيتم حقن المحتوى هنا بواسطة الجافاسكربت -->
-    </main>
+    <main id="app-content"></main>
+
+    <!-- النافذة المنبثقة لإضافة المحتوى -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modal-title">إضافة محتوى</span>
+                <button class="close-modal" onclick="closeAddModal()">&times;</button>
+            </div>
+            <input type="hidden" id="modal-type">
+            
+            <label style="color: var(--text-muted); display: block; margin-bottom: 8px;">عنوان المحتوى:</label>
+            <input type="text" id="modal-title-input" class="input-field" placeholder="مثال: المحاضرة الأولى...">
+            
+            <label style="color: var(--text-muted); display: block; margin-bottom: 8px;">الرابط (URL):</label>
+            <input type="url" id="modal-url-input" class="input-field" placeholder="انسخ والصق الرابط هنا..." dir="ltr">
+            
+            <button class="btn" id="save-btn" style="margin-top: 15px;" onclick="submitContent()">حفظ ونشر</button>
+        </div>
+    </div>
 
     <script>
-        // المتغيرات الأساسية للنظام
+        const API_URL = "https://butch-chi.vercel.app";
+        let currentUser = null; 
         let currentTab = 'subjects';
-        let currentUser = { role: 'admin' }; 
         let currentSubjectId = null;
+        let activeSubTab = 'files'; // files, videos, qa
 
-        // نقطة البداية
         function init() {
-            render();
+            const savedUser = localStorage.getItem('batchUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('main-header').style.display = 'flex';
+                render();
+            } else {
+                document.getElementById('main-header').style.display = 'none';
+                renderLogin();
+            }
         }
 
-        // دالة التبديل بين النوافذ
-        function switchTab(tab) {
+        function renderLogin() {
+    const app = document.getElementById('app-content');
+    app.innerHTML = `
+        <div class="login-wrapper card">
+            <div style="font-size: 50px; margin-bottom: 10px;">🎓</div>
+            <h2 style="margin-bottom: 20px;">تسجيل الدخول للنظام</h2>
+            
+            <input type="email" id="login-email" class="input-field" placeholder="البريد الإلكتروني" dir="ltr">
+            <input type="password" id="login-pass" class="input-field" placeholder="كلمة المرور" dir="ltr">
+            <button class="btn" onclick="realLogin()">تسجيل الدخول</button>
+        </div>
+    `;
+}
+
+        function realLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-pass').value;
+            if(!email || !password) return alert("الرجاء إدخال البيانات");
+
+            fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+            .then(res => {
+                if(!res.ok) throw new Error("بيانات خاطئة");
+                return res.json();
+            })
+            .then(data => {
+                currentUser = data.user;
+                localStorage.setItem('batchUser', JSON.stringify(currentUser));
+                init();
+            })
+            .catch(e => alert("فشل تسجيل الدخول: البريد أو كلمة المرور خاطئة."));
+        }
+
+        
+
+        function logout() {
+            localStorage.removeItem('batchUser');
+            currentUser = null;
+            init();
+        }
+
+        function switchMainTab(tab) {
             currentTab = tab;
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             if(event) event.target.classList.add('active');
             render();
         }
 
-        // دالة الرسم الأساسية (المحرك)
         function render() {
             const app = document.getElementById('app-content');
-            app.innerHTML = ''; // تفريغ الشاشة
+            app.innerHTML = '';
 
             if (currentTab === 'subjects') {
-                const subjectsList = [
-                    { id: 'oop', name: 'برمجة شيئية', doctor: 'د. [اسم الدكتور]', icon: '💻' },
-                    { id: 'num_analysis', name: 'التحليل العددي', doctor: 'د. [اسم الدكتور]', icon: '✍️' },
-                    { id: 'computation', name: 'النظرية الاحتسابية', doctor: 'د. [اسم الدكتور]', icon: '🧮' },
-                    { id: 'python', name: 'لغة بايثون', doctor: 'د. [اسم الدكتور]', icon: '🐍' },
-                    { id: 'arabic', name: 'اللغة العربية', doctor: 'د. [اسم الدكتور]', icon: '📚' },
-                    { id: 'ai_algo', name: 'خوارزميات AI', doctor: 'د. [اسم الدكتور]', icon: '🤖' }
-                ];
+    const subjectsList = [
+        { id: 'oop', name: 'برمجة شيئية', icon: '💻' },
+        { id: 'num_analysis', name: 'التحليل العددي', icon: '✍️' },
+        { id: 'computation', name: 'النظرية الاحتسابية', icon: '🧮' },
+        { id: 'python', name: 'لغة بايثون', icon: '🐍' },
+        { id: 'arabic', name: 'اللغة العربية', icon: '📚' },
+        { id: 'ai_algo', name: 'خوارزميات AI', icon: '🤖' }
+    ];
 
-                app.innerHTML = subjectsList.map(sub => `
-                    <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
-                        <div style="font-size: 45px; margin-bottom: 10px;">${sub.icon}</div>
-                        <div class="card-title">${sub.name}</div>
-                        <div class="card-desc" style="margin-bottom: 15px;">${sub.doctor}</div>
-                        <button class="btn" onclick="openSubject('${sub.id}')">فتح المادة</button>
-                    </div>
-                `).join('');
-            }
-            else if (currentTab === 'batch') {
-                let batchHTML = `
-                    <div class="card" style="grid-column: 1 / -1; text-align: center;">
-                        <div class="card-title" style="font-size: 24px;">علوم الذكاء الاصطناعي - المرحلة الثانية</div>
-                        <div class="card-desc" style="margin-top: 10px;">إدارة وإشراف: مهدي</div>
-                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
-                        
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                            <a href="#" class="btn" style="flex: 1; min-width: 150px;">قناة التبليغات</a>
-                            <a href="#" class="btn" style="flex: 1; min-width: 150px; background: #22c55e;">كروب المناقشة</a>
-                            <a href="#" class="btn" style="flex: 1; min-width: 150px; background: #ef4444;">قناة الشروحات (يوتيوب)</a>
-                        </div>
-                    </div>
-
-                    <div class="card" style="grid-column: 1 / -1;">
-                        <div class="card-title" style="color: var(--primary);">📢 الرسالة الأسبوعية</div>
-                        <div class="card-desc" style="font-size: 16px;">(سيتم جلب هذه الرسالة من قاعدة البيانات عبر الـ API الخاص بك)</div>
-                    </div>
-                `;
-
-                if (currentUser && currentUser.role === 'admin') {
-                    batchHTML += `
-                        <div class="admin-panel">
-                            <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">⚙️ لوحة تحكم الإدارة</div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn" style="flex: 1;">تحديث الرسالة الأسبوعية</button>
-                                <button class="btn btn-danger" style="flex: 1;">+ إضافة مشرف جديد</button>
-                            </div>
-                        </div>
-                    `;
-                }
-                app.innerHTML = batchHTML;
-            }
-            // الواجهة التي نسيتها: صفحة عرض المحاضرات
-            else if (currentTab === 'lectures') {
-                let lecturesHTML = `
-                    <div style="grid-column: 1 / -1; margin-bottom: 10px;">
-                        <button class="btn" style="width: auto; background: var(--border); color: var(--text-main);" onclick="switchTab('subjects')">🔙 العودة للمواد</button>
-                    </div>
-                    
-                    <div class="card" style="grid-column: 1 / -1;">
-                        <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">📚 المحاضرات والشروحات</div>
-                        <div id="lectures-container" style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="empty-state">سيتم جلب المحاضرات من قاعدة البيانات هنا...</div>
-                        </div>
-                    </div>
-                `;
-
-                if (currentUser && currentUser.role === 'admin') {
-                    lecturesHTML += `
-                        <div class="admin-panel" style="margin-top: 20px;">
-                            <div class="card-title" style="color: var(--primary); margin-bottom: 15px;">⚙️ رفع محتوى جديد للمادة</div>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                                <button class="btn" style="flex: 1;" onclick="addContent('pdf')">+ إضافة ملف محاضرة</button>
-                                <button class="btn btn-danger" style="flex: 1;" onclick="addContent('video')">+ إضافة شرح يوتيوب</button>
-                            </div>
-                        </div>
-                    `;
-                }
-                app.innerHTML = lecturesHTML;
-            }
-        }
-
-        // الانتقال لصفحة المادة وجلب بياناتها
-        function openSubject(id) {
-            currentSubjectId = id;
-            currentTab = 'lectures';
-            render(); 
-            fetchSubjectData(); 
-        }
-
-        // دالة جلب المحاضرات من الخادم
-        function fetchSubjectData() {
-            const container = document.getElementById('lectures-container');
-            container.innerHTML = '<div class="empty-state">⏳ جاري الاتصال بالخادم...</div>';
-
-            fetch(`https://batch-api-oj4n.vercel.app/api/lectures/${currentSubjectId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<div class="empty-state">لا توجد محاضرات أو شروحات لهذه المادة حتى الآن.</div>';
-                    return;
-                }
-                
-                container.innerHTML = data.map(item => `
-                    <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                        <div style="font-weight: 500;">${item.title}</div>
-                        <a href="${item.url}" target="_blank" class="btn" style="width: auto; padding: 5px 15px; background: ${item.type === 'video' ? 'var(--danger)' : 'var(--primary)'}">
-                            ${item.type === 'video' ? '▶️ مشاهدة' : '📄 تحميل'}
-                        </a>
-                    </div>
-                `).join('');
-            })
-            .catch(error => {
-                console.error(error);
-                container.innerHTML = '<div class="empty-state" style="color: #ef4444;">❌ فشل الاتصال بالخادم. تأكد من الروابط.</div>';
-            });
-        }
-
-        // دالة إضافة محتوى جديد
-        function addContent(type) {
-            let title = prompt("اكتب عنوان المحاضرة أو الشرح (مثال: المحاضرة الأولى):");
-            if (!title) return;
+    app.innerHTML = `<div class="grid-container">` + subjectsList.map(sub => `
+        <div class="card" style="text-align: center; border-top: 4px solid var(--primary); position: relative;">
+            <!-- الشارة الحمراء المخفية افتراضياً -->
+            <span id="badge-${sub.id}" style="display: none; position: absolute; top: 10px; right: 10px; background: var(--danger); width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 8px var(--danger);"></span>
             
-            let url = prompt("ضع رابط الملف أو فيديو اليوتيوب هنا:");
-            if (!url) return;
+            <div style="font-size: 45px; margin-bottom: 10px;">${sub.icon}</div>
+            <div class="card-title" style="margin-bottom: 15px;">${sub.name}</div>
+            <button class="btn" onclick="openSubject('${sub.id}')">فتح المادة</button>
+        </div>
+    `).join('') + `</div>`;
 
-            fetch(`https://batch-api-oj4n.vercel.app/api/lectures/add`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    subject_id: currentSubjectId, 
-                    title: title, 
-                    url: url, 
-                    type: type 
-                })
-            })
+    // جلب التحديثات من الخادم لإظهار الشارات الحمراء
+    fetch(`${API_URL}/api/updates/check`)
+    .then(res => res.json())
+    .then(updates => {
+        window.latestUpdates = updates; // حفظها بالذاكرة
+        subjectsList.forEach(sub => {
+            const storedMax = parseInt(localStorage.getItem(`max_id_${sub.id}`)) || 0;
+            const currentMax = updates[sub.id] || 0;
+            
+            // إذا كان أعلى ID في الخادم أكبر من الـ ID المخزن في هاتف الطالب -> هناك محتوى جديد
+            if (currentMax > storedMax) {
+                document.getElementById(`badge-${sub.id}`).style.display = 'block';
+            }
+        });
+    })
+    .catch(e => console.log("فشل فحص التحديثات"));
+}
+           else if (currentTab === 'batch') {
+    app.innerHTML = `
+        <!-- دليل الدفعة (مطابق لتصميمك) -->
+        <div class="card" style="text-align: center; margin-bottom: 20px; background: linear-gradient(145deg, var(--card-bg), var(--bg-color));">
+            <div style="font-size: 55px; margin-bottom: 10px;">🎓</div>
+            <div class="card-title" style="font-size: 24px; color: white;">علوم الذكاء الاصطناعي - المرحلة الثانية</div>
+            <div style="color: var(--text-muted); margin-top: 5px; font-size: 16px;">إشراف وإدارة: مهدي (ممثل الدفعة)</div>
+            
+            <hr style="border-color: var(--border); margin: 20px 0;">
+            
+            <p style="color: var(--text-muted); font-size: 15px; margin-bottom: 20px; line-height: 1.8;">
+                هذا النظام مخصص لتنظيم المحاضرات والأسئلة. جميع الشروحات والمواد تقدم للطلاب مجاناً ولا يتطلب النظام أي أكواد دعوة لتنزيل الملفات.
+            </p>
+
+            <!-- الأزرار الملونة -->
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 25px;">
+                <a href="https://www.youtube.com/@guts4486/videos" class="btn" style="background: #ef4444; color: white; width: auto; padding: 10px 25px;">قناة الشروحات</a>
+                <a href="https://t.me/+W0Dwz5CDcmEwNDNi" class="btn" style="background: #2dd4bf; color: #0f172a; width: auto; padding: 10px 25px; font-weight: bold;">كروب المناقشة</a>
+                <a href="https://t.me/+vv2ot9xsKBE0NmZi" class="btn" style="background: #14b8a6; color: white; width: auto; padding: 10px 25px;">قناة التبليغات</a>
+            </div>
+
+            <!-- إيميلات الأساتذة -->
+            <div style="background: var(--bg-color); border: 1px solid var(--border); border-radius: 8px; padding: 15px; text-align: center;">
+                <div style="color: var(--text-muted); margin-bottom: 10px;">إيميل الدكتور احمد (بايثون نظري): <span style="color: var(--text-main);">ahmedh.almajidy@uokufa.edu.iq</span></div>
+                <div style="color: var(--text-muted);">إيميل الدكتور اسعد (خوارزميات نظري): <span style="color: var(--text-main);">asaad.alshareefi@uokufa.edu.iq</span></div>
+            </div>
+        </div>
+
+        <!-- نظام الرسائل الأسبوعية -->
+        <div class="card">
+            <div class="card-title" style="color: var(--warning); margin-bottom: 15px;">📢 التوجيهات والرسائل الأسبوعية</div>
+            
+            ${currentUser && currentUser.role === 'admin' ? `
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="new-msg-input" class="input-field" style="margin: 0;" placeholder="اكتب التوجيه أو الرسالة لهذا الأسبوع...">
+                    <button class="btn btn-success" style="width: 120px;" onclick="addWeeklyMessage()">نشر</button>
+                </div>
+            ` : ''}
+            
+            <div id="messages-container"></div>
+        </div>
+    `;
+    
+    // استدعاء دالة جلب الرسائل بمجرد فتح الصفحة
+    fetchWeeklyMessages();
+}
+            else if (currentTab === 'subject_details') {
+                renderSubjectDetails(app);
+            }
+        }
+
+        function openSubject(id) {
+    currentSubjectId = id;
+    currentTab = 'subject_details';
+    activeSubTab = 'files'; 
+    
+    // إزالة الشارة الحمراء بتحديث رقم آخر محاضرة شاهدها الطالب
+    if (window.latestUpdates && window.latestUpdates[id]) {
+        localStorage.setItem(`max_id_${id}`, window.latestUpdates[id]);
+    }
+    
+    render();
+}
+
+        function renderSubjectDetails(app) {
+            app.innerHTML = `
+                <button class="btn btn-outline" style="width: auto; margin-bottom: 15px;" onclick="switchMainTab('subjects')">🔙 العودة للمواد</button>
+                
+                <div class="card">
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn ${activeSubTab === 'files' ? 'active' : ''}" onclick="switchSubTab('files')">📖 الملفات</button>
+                        <button class="sub-tab-btn ${activeSubTab === 'videos' ? 'active' : ''}" onclick="switchSubTab('videos')">▶️ الشروحات</button>
+                        <button class="sub-tab-btn ${activeSubTab === 'qa' ? 'active' : ''}" onclick="switchSubTab('qa')">❓ الأسئلة والمناقشة</button>
+                    </div>
+                    <div id="sub-view-container"></div>
+                </div>
+            `;
+            
+            if (activeSubTab === 'files') fetchMedia('files');
+            else if (activeSubTab === 'videos') fetchMedia('videos');
+            else fetchQA();
+        }
+
+        function switchSubTab(tab) {
+            activeSubTab = tab;
+            render();
+        }
+
+        // --- محرك عرض المحتوى المفصول ---
+        function fetchMedia(mediaType) {
+    const container = document.getElementById('sub-view-container');
+    container.innerHTML = '<div class="empty-state">⏳ جاري الاتصال بالخادم...</div>';
+
+    fetch(`${API_URL}/api/lectures/${currentSubjectId}`)
+    .then(res => res.json())
+    .then(data => {
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="empty-state">لا يوجد محتوى في هذا القسم حتى الآن.</div>' + getAdminControls(mediaType);
+            return;
+        }
+
+        let filteredData = [];
+        let emoji, color, emptyMsg;
+
+        if (mediaType === 'files') {
+            // الخدعة: الملفات هي أي شيء لا يحتوي على علامة الفيديو
+            filteredData = data.filter(item => !item.title.startsWith('[VIDEO]'));
+            emoji = '📖'; color = 'var(--primary)';
+            emptyMsg = 'لا توجد ملفات دراسية حتى الآن.';
+        } else {
+            // الشروحات هي التي تحتوي على علامة الفيديو حصراً
+            filteredData = data.filter(item => item.title.startsWith('[VIDEO]'));
+            emoji = '▶️'; color = 'var(--danger)';
+            emptyMsg = 'لا توجد شروحات فيديو حتى الآن.';
+        }
+
+        if(filteredData.length === 0) {
+            container.innerHTML = `<div class="empty-state">${emptyMsg}</div>` + getAdminControls(mediaType);
+            return;
+        }
+
+        let html = filteredData.map(item => createItemHTML(item, emoji, color)).join('');
+        html += getAdminControls(mediaType);
+        container.innerHTML = html;
+    })
+    .catch(e => container.innerHTML = '<div class="empty-state" style="color: red;">❌ فشل الاتصال.</div>');
+}
+
+// 2. دالة بناء تصميم العنصر (مع إخفاء العلامات)
+function createItemHTML(item, emoji, color) {
+    // تنظيف العنوان من العلامات البرمجية لكي تظهر للطالب بشكل نظيف
+    const cleanTitle = item.title.replace('[VIDEO]', '').replace('[PDF]', '');
+    
+    return `
+        <div style="background: var(--item-bg); padding: 15px 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 16px; color: white;">${cleanTitle}</div>
+            
+            <div style="display: flex; gap: 10px; align-items: center;">
+                ${currentUser.role === 'admin' ? `<button class="btn-delete" onclick="deleteLecture(${item.id})">🗑️</button>` : ''}
+                
+                <a href="${item.file_url}" target="_blank" style="background: ${color}; color: white; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.2s;">
+                    فتح ${emoji}
+                </a>
+            </div>
+        </div>
+    `;
+}
+
+        // أزرار الإدارة تتغير حسب التبويب المفتوح
+        function getAdminControls(mediaType) {
+            if (currentUser.role !== 'admin') return '';
+            
+            if (mediaType === 'files') {
+                return `
+                    <div class="admin-panel">
+                        <button class="btn" style="background: var(--primary);" onclick="openAddModal('pdf')">+ إضافة ملف دراسي جديد (PDF)</button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="admin-panel">
+                        <button class="btn" style="background: var(--danger);" onclick="openAddModal('video')">+ إضافة شرح يوتيوب جديد (Video)</button>
+                    </div>
+                `;
+            }
+        }
+
+        function openAddModal(type) {
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('modal-type').value = type;
+            document.getElementById('modal-title').innerText = type === 'pdf' ? '📖 إضافة ملف دراسي' : '▶️ إضافة شرح يوتيوب';
+            document.getElementById('modal-title-input').value = '';
+            document.getElementById('modal-url-input').value = '';
+            
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.style.background = type === 'pdf' ? 'var(--primary)' : 'var(--danger)';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+
+        function submitContent() {
+    const title = document.getElementById('modal-title-input').value;
+    const url = document.getElementById('modal-url-input').value;
+    const type = document.getElementById('modal-type').value;
+
+    if (!title || !url) return alert("يرجى ملء جميع الحقول");
+
+    // الهندسة هنا: دمج العلامة المخفية مع العنوان قبل الإرسال
+    const finalTitle = type === 'video' ? `[VIDEO]${title}` : `[PDF]${title}`;
+
+    const btn = document.getElementById('save-btn');
+    btn.innerText = 'جاري الحفظ...';
+    btn.disabled = true;
+
+    fetch(`${API_URL}/api/lectures/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject_id: currentSubjectId, title: finalTitle, file_url: url, type: type })
+    })
+    .then(res => res.json())
+    .then(() => { 
+        closeAddModal();
+        fetchMedia(type === 'pdf' ? 'files' : 'videos'); 
+    })
+    .catch(() => alert("خطأ في الإضافة"))
+    .finally(() => {
+        btn.innerText = 'حفظ ونشر';
+        btn.disabled = false;
+    });
+}
+
+        function deleteLecture(id) {
+            if (!confirm("هل أنت متأكد من الحذف النهائي؟")) return;
+            fetch(`${API_URL}/api/lectures/${id}`, { method: 'DELETE' })
+            .then(() => fetchMedia(activeSubTab));
+        }
+
+        // --- قسم الأسئلة ---
+        function fetchQA() {
+            const container = document.getElementById('sub-view-container');
+            let html = `
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="new-q-text" class="input-field" style="margin: 0;" placeholder="لديك سؤال حول المادة؟ اكتبه هنا...">
+                    <button class="btn btn-success" style="width: 120px;" onclick="askQuestion()">إرسال</button>
+                </div>
+                <div id="qa-list"><div class="empty-state">⏳ جاري جلب الأسئلة...</div></div>
+            `;
+            container.innerHTML = html;
+
+            fetch(`${API_URL}/api/questions/${currentSubjectId}`)
             .then(res => res.json())
             .then(data => {
-                alert("✅ تمت الإضافة بنجاح!");
-                fetchSubjectData(); 
+                const qaList = document.getElementById('qa-list');
+                if (!data || data.length === 0) {
+                    qaList.innerHTML = '<div class="empty-state">لا توجد أسئلة لهذه المادة بعد. كن أول من يسأل!</div>';
+                    return;
+                }
+
+                qaList.innerHTML = data.map(q => `
+                    <div class="q-box">
+                        <div class="q-text">❓ سؤال: ${q.q_text}</div>
+                        ${q.a_text ? `<div class="a-text">💡 الجواب: ${q.a_text}</div>` : `<div style="color: var(--text-muted); font-size: 14px; margin-top: 5px;">⏳ بانتظار الإجابة...</div>`}
+                        ${(!q.a_text && currentUser.role === 'admin') ? `
+                            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                                <input type="text" id="ans-${q.id}" class="input-field" style="margin: 0; padding: 5px;" placeholder="اكتب إجابتك هنا...">
+                                <button class="btn" style="width: auto; padding: 5px 15px;" onclick="answerQuestion(${q.id})">إجابة</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
             })
-            .catch(e => alert("حدث خطأ أثناء الإضافة"));
+            .catch(e => document.getElementById('qa-list').innerHTML = '<div class="empty-state" style="color: red;">❌ فشل جلب الأسئلة.</div>');
         }
 
-        // تشغيل النظام
+        function askQuestion() {
+            const text = document.getElementById('new-q-text').value;
+            if(!text) return;
+            fetch(`${API_URL}/api/questions/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject_id: currentSubjectId, q_text: text })
+            }).then(() => fetchQA());
+        }
+
+        function answerQuestion(qId) {
+            const ansText = document.getElementById(`ans-${qId}`).value;
+            if(!ansText) return;
+            fetch(`${API_URL}/api/questions/${qId}/answer`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ a_text: ansText })
+            }).then(() => fetchQA());
+        }
+
         init();
+        // دوال إدارة الرسائل الأسبوعية
+function fetchWeeklyMessages() {
+    const container = document.getElementById('messages-container');
+    // مؤقتاً: حفظ الرسائل في ذاكرة المتصفح المحلية
+    const msgs = JSON.parse(localStorage.getItem('weeklyMessages') || '[]');
+    
+    if (msgs.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px; border: 1px dashed var(--border); border-radius: 8px;">لا توجد رسائل أسبوعية حتى الآن.</div>';
+        return;
+    }
+
+    container.innerHTML = msgs.map((msg, index) => `
+        <div style="background: var(--item-bg); border-right: 4px solid var(--warning); padding: 15px; margin-bottom: 10px; border-radius: 4px; position: relative;">
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">الأسبوع ${msgs.length - index} • ${msg.date}</div>
+            <div style="color: white; font-size: 15px;">${msg.text}</div>
+            ${currentUser.role === 'admin' ? `<button onclick="deleteMessage(${index})" style="position: absolute; top: 15px; left: 15px; background: none; border: none; color: var(--danger); cursor: pointer; font-size: 13px;">حذف 🗑️</button>` : ''}
+        </div>
+    `).join('');
+}
+
+function addWeeklyMessage() {
+    const text = document.getElementById('new-msg-input').value;
+    if(!text) return;
+    
+    const msgs = JSON.parse(localStorage.getItem('weeklyMessages') || '[]');
+    // استخدام توقيت العراق لتسجيل تاريخ الرسالة
+    const date = new Date().toLocaleDateString('ar-IQ');
+    
+    msgs.unshift({ text, date }); // إضافة الرسالة الجديدة في الأعلى
+    localStorage.setItem('weeklyMessages', JSON.stringify(msgs));
+    
+    fetchWeeklyMessages();
+}
+
+function deleteMessage(index) {
+    if(!confirm('هل أنت متأكد من حذف هذه الرسالة؟')) return;
+    const msgs = JSON.parse(localStorage.getItem('weeklyMessages') || '[]');
+    msgs.splice(index, 1);
+    localStorage.setItem('weeklyMessages', JSON.stringify(msgs));
+    fetchWeeklyMessages();
+}
     </script>
 </body>
 </html>

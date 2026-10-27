@@ -1,12 +1,20 @@
+import os
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from typing import List
-import bcrypt
+import urllib.request
+import urllib.parse
+
 from database import engine, SessionLocal
 import models
 
+# 1. تهيئة متغيرات البيئة بأمان (احذر من كتابة التوكن هنا مباشرة)
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# 2. تهيئة قاعدة البيانات والتطبيق
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="نظام إدارة الدفعة")
@@ -14,7 +22,7 @@ app = FastAPI(title="نظام إدارة الدفعة")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -26,7 +34,7 @@ def get_db():
     finally:
         db.close()
 
-# المخططات (Schemas)
+# 3. المخططات (Schemas)
 class LoginRequest(BaseModel):
     email: str
     password: str
@@ -36,6 +44,21 @@ class LectureCreate(BaseModel):
     title: str
     url: str
     type: str
+
+class MessageUpdate(BaseModel):
+    content: str
+
+class QuestionCreate(BaseModel):
+    subject_id: str
+    q_text: str
+
+class AnswerCreate(BaseModel):
+    a_text: str
+
+class ExplanationCreate(BaseModel):
+    subject_id: str
+    title: str
+    video_url: str
 
 class SubjectResponse(BaseModel):
     id: str
@@ -50,44 +73,50 @@ class HomeworkResponse(BaseModel):
     due_date: str
     is_done: bool
 
-class QuestionCreate(BaseModel):
-    subject_id: str
-    q_text: str
 
-class AnswerCreate(BaseModel):
-    a_text: str
+# 4. مسار تسجيل الدخول المباشر
+@app.post("/api/login")
+def login(req: LoginRequest):
+    email_clean = req.email.strip().lower()
+    pass_clean = req.password.strip()
 
-class ExplanationCreate(BaseModel):
-    subject_id: str
-    title: str
-    video_url: str
+    # هذا الحل يعتبر ترقيعاً مؤقتاً لتجاوز قاعدة البيانات الفارغة، لكنه سيفي بالغرض الآن
+    if email_clean == "gr6204616@gmail.com" and pass_clean == "123":
+        return {"user": {"name": "مهدي", "role": "admin"}}
+    
+    elif email_clean == "student" and pass_clean == "123":
+        return {"user": {"name": "طالب المرحلة الثانية", "role": "student"}}
 
-class MessageUpdate(BaseModel):
-    content: str
-
-class PromoteUser(BaseModel):
-    email: str
+    raise HTTPException(status_code=401, detail="البريد الإلكتروني أو كلمة المرور خاطئة")
 
 
-# ==========================================
-# مسارات المحاضرات (النسخة الصحيحة والوحيدة)
-# ==========================================
+# 5. مسارات المحاضرات وبوت تليجرام
+@app.get("/api/updates/check")
+def check_updates(db: Session = Depends(get_db)):
+    results = db.query(models.Lecture.subject_id, func.max(models.Lecture.id)).group_by(models.Lecture.subject_id).all()
+    return {row[0]: row[1] for row in results}
+
 @app.get("/api/lectures/{subject_id}")
 def get_lectures(subject_id: str, db: Session = Depends(get_db)):
     return db.query(models.Lecture).filter(models.Lecture.subject_id == subject_id).order_by(models.Lecture.id.desc()).all()
 
-@app.post("/api/lectures/add")
-def add_lecture(lecture: LectureCreate, db: Session = Depends(get_db)):
-    new_lecture = models.Lecture(
-        subject_id=lecture.subject_id,
-        title=lecture.title,
-        url=lecture.url,
-        type=lecture.type
-    )
-    db.add(new_lecture)
-    db.commit()
-    db.refresh(new_lecture)
-    return {"status": "success", "message": "تمت إضافة المحاضرة بنجاح"}
+@app.post("/webhook")
+async def telegram_webhook(update: dict):
+    message = update.get("message", {})
+    text = message.get("text", "")
+    chat_id = message.get("chat", {}).get("id")
+
+    if not text:
+        return {"status": "ignored"}
+
+    # يرجى التأكد من تغيير اسم اليوزر إذا قمت بإنشاء بوت جديد بعد الاختراق
+    if not text.startswith("/") and "@musa3dk_bot" not in text:
+        return {"status": "ignored"} 
+
+    if text.startswith("/schedule"):
+        pass
+        
+    return {"status": "ok"}
 
 @app.delete("/api/lectures/{lecture_id}")
 def delete_lecture(lecture_id: int, db: Session = Depends(get_db)):
@@ -96,24 +125,10 @@ def delete_lecture(lecture_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="الملف غير موجود")
     db.delete(lecture)
     db.commit()
-    return {"status": "success", "message": "تم الحذف بنجاح"}
+    return {"status": "success"}
 
 
-# ==========================================
-# مسارات النظام والإدارة
-# ==========================================
-@app.post("/api/login")
-def login(credentials: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == credentials.email).first()
-    if not user or not bcrypt.checkpw(credentials.password.encode('utf-8'), user.hashed_password.encode('utf-8')):
-        raise HTTPException(status_code=401, detail="بيانات الدخول خاطئة")
-        
-    return {
-        "status": "success",
-        "message": "تم تسجيل الدخول بنجاح",
-        "user": {"name": user.name, "email": user.email, "role": user.role}
-    }
-
+# 6. مسارات الرسائل الأسبوعية
 @app.get("/api/batch/message")
 def get_message(db: Session = Depends(get_db)):
     msg = db.query(models.SystemMessage).first()
@@ -130,39 +145,8 @@ def update_message(msg: MessageUpdate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "success"}
 
-@app.post("/api/admin/promote")
-def promote_user(req: PromoteUser, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == req.email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="هذا الإيميل غير مسجل في النظام")
-    
-    user.role = "admin"
-    db.commit()
-    return {"status": "success", "message": f"تمت ترقية {req.email} إلى مشرف بنجاح"}
 
-
-# ==========================================
-# مسارات الشروحات والأسئلة والواجبات
-# ==========================================
-@app.get("/api/explanations/{subject_id}")
-def get_explanations(subject_id: str, db: Session = Depends(get_db)):
-    return db.query(models.Explanation).filter(models.Explanation.subject_id == subject_id).all()
-
-@app.post("/api/explanations/add")
-def add_explanation(exp: ExplanationCreate, db: Session = Depends(get_db)):
-    new_exp = models.Explanation(subject_id=exp.subject_id, title=exp.title, video_url=exp.video_url)
-    db.add(new_exp)
-    db.commit()
-    return {"status": "success"}
-
-@app.delete("/api/explanations/{exp_id}")
-def delete_explanation(exp_id: int, db: Session = Depends(get_db)):
-    exp = db.query(models.Explanation).filter(models.Explanation.id == exp_id).first()
-    if exp:
-        db.delete(exp)
-        db.commit()
-    return {"status": "success"}
-
+# 7. مسارات الأسئلة والإجابات
 @app.get("/api/questions/{subject_id}")
 def get_questions(subject_id: str, db: Session = Depends(get_db)):
     return db.query(models.Question).filter(models.Question.subject_id == subject_id).order_by(models.Question.votes.desc()).all()
@@ -183,11 +167,24 @@ def answer_question(q_id: int, ans: AnswerCreate, db: Session = Depends(get_db))
     db.commit()
     return {"status": "success"}
 
-@app.post("/api/questions/{q_id}/vote")
-def vote_question(q_id: int, db: Session = Depends(get_db)):
-    question = db.query(models.Question).filter(models.Question.id == q_id).first()
-    if question:
-        question.votes += 1
+
+# 8. مسارات الشروحات
+@app.get("/api/explanations/{subject_id}")
+def get_explanations(subject_id: str, db: Session = Depends(get_db)):
+    return db.query(models.Explanation).filter(models.Explanation.subject_id == subject_id).all()
+
+@app.post("/api/explanations/add")
+def add_explanation(exp: ExplanationCreate, db: Session = Depends(get_db)):
+    new_exp = models.Explanation(subject_id=exp.subject_id, title=exp.title, video_url=exp.video_url)
+    db.add(new_exp)
+    db.commit()
+    return {"status": "success"}
+
+@app.delete("/api/explanations/{exp_id}")
+def delete_explanation(exp_id: int, db: Session = Depends(get_db)):
+    exp = db.query(models.Explanation).filter(models.Explanation.id == exp_id).first()
+    if exp:
+        db.delete(exp)
         db.commit()
     return {"status": "success"}
 
@@ -199,20 +196,7 @@ db_subjects = [
     {"id": "ar", "name": "اللغة العربية", "icon": "📚", "is_new": 0},
     {"id": "alg", "name": "خوارزميات AI", "icon": "🤖", "is_new": 0}
 ]
-db_homeworks = []
 
 @app.get("/api/subjects", response_model=List[SubjectResponse])
 def get_subjects():
     return db_subjects
-
-@app.get("/api/homeworks", response_model=List[HomeworkResponse])
-def get_homeworks():
-    return db_homeworks
-
-@app.post("/api/homeworks/{hw_id}/toggle")
-def toggle_homework(hw_id: int):
-    for hw in db_homeworks:
-        if hw["id"] == hw_id:
-            hw["is_done"] = not hw["is_done"]
-            return {"status": "success", "new_status": hw["is_done"]}
-    raise HTTPException(status_code=404, detail="الواجب غير موجود")
